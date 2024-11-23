@@ -1,10 +1,9 @@
 /*
  * scheduler.c
  *
- *  Created on: Nov 01, 2024
+ *  Created on: Nov 23, 2024
  *      Author: Dell
  */
-
 #include "scheduler.h"
 
 #define TIME_CYCLE 10	// 10 miliseconds
@@ -146,5 +145,4 @@ uint32_t get_time()
 {
 	return timestamps;
 }
-
 
