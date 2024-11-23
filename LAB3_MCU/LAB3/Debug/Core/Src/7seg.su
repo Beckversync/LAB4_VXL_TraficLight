@@ -1,0 +1,10 @@
+7seg.c:12:6:display7SEG	16	static
+7seg.c:123:6:clearAllEN	8	static
+7seg.c:131:6:update7SEG	16	static
+7seg.c:153:6:offLed	8	static
+7seg.c:163:6:onRed1	8	static
+7seg.c:166:6:onYellow1	8	static
+7seg.c:169:6:onGreen1	8	static
+7seg.c:175:6:onRed2	8	static
+7seg.c:178:6:onYellow2	8	static
+7seg.c:181:6:onGreen2	8	static
