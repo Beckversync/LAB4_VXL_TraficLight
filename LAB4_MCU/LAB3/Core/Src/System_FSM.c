@@ -8,246 +8,240 @@
 
 #include "System_FSM.h"
 
-int default_redlight;
-int default_yellowlight;
-int default_greenlight;
-void SystemFSM(){
-	switch(status){
-		case INIT:
-			if(is_button_pressed(0)){
-				button1_press = 1;
-			}
-			if(!is_button_pressed(0) && button1_press){
-				status = MODE1_NORMAL;
-				setTimer(100, 0);
-				setTimer(100, 1);
-				// set default status for traffic light fsm
-				TL1 = RED;
-				TL2 = GREEN;
+// Trạng thái chính
+int trafficMode = INIT;
+int autoStatus = INIT;
+int manualStatus = OFF;
+int tuningStatus = OFF;
 
-				// set default value time for traffic light fsm
-				default_redlight = redlight;
-				default_yellowlight = yellowlight;
-				default_greenlight = greenlight;
+// Bộ đếm thời gian cho từng hướng
+int clock_counter_main = 0;
+int clock_counter_side = 0;
 
-				Red1 = default_redlight;
-				Green2 = default_greenlight;
-				button1_press=0;
-			}
-			break;
-		case MODE1_NORMAL:
-			TrafficLightFSM1();
-			TrafficLightFSM2();
-			// press and release
-			if(is_button_pressed(0)){
-				button1_press = 1;
-			}
-			if(!is_button_pressed(0) && button1_press){
-				status = MODE2_MANRED;
-				setTimer(50, 3);
-				button1_press = 0;
-			}
-			break;
-		case MODE2_MANRED:
-			// red led blinking 2HZ
-			if(flag[3] == 1){
-				setTimer(50, 3);
-				HAL_GPIO_TogglePin(LED_RED_1_GPIO_Port, LED_RED_1_Pin);
-				HAL_GPIO_TogglePin(LED_RED_2_GPIO_Port, LED_RED_2_Pin);
-			}
-			// 2 7SEG display value
-			Updatebuffer(redlight, 1);
-			// 2 7SEG display mode
-			Updatebuffer(MODE2_MANRED, 2);
-			// if button2 is pressed and released after that
-			// increasing value by 1
-			if(is_button_pressed(1)){
-				button2_press = 1;
-			}
-			if(!is_button_pressed(1) && button2_press){
-				redlight++;
-				greenlight++;
-				button2_press = 0;
-			}
-			// if button2 is pressed long 1s
-			if(is_button_pressed_1s(1)){
-				if(button2_first_press1s){
-					setTimer(50, 4);
-					button2_first_press1s = 0;
-				}
-				if(flag[4] == 1){
-					setTimer(50, 4);
-					redlight++;
-					greenlight++;
-				}
-			}
-			// if button3 is pressed, turn back to mode 1 normal
-			if(is_button_pressed(2)){
-				button3_press = 1;
-			}
-			if(!is_button_pressed(2) && button3_press){
-				status = MODE1_NORMAL;
-				// set timer for traffic light
-				setTimer(100, 0);
-				setTimer(100, 1);
+// Thời gian mỗi đèn trong chế độ tự động
+int timeRed = 5;
+int timeAmber = 2;
+int timeGreen = 3;
 
-				redlight = default_redlight;
-				yellowlight = default_yellowlight;
-				greenlight = default_greenlight;
 
-				// turn off traffic light
-				HAL_GPIO_WritePin(LED_RED_1_GPIO_Port, LED_RED_1_Pin, SET);
-				HAL_GPIO_WritePin(LED_RED_2_GPIO_Port, LED_RED_2_Pin, SET);
-				button3_press = 0;
-			}
-			// if button1 is pressed, go to next status
-			if(is_button_pressed(0)){
-				button1_press = 1;
-			}
-			if(!is_button_pressed(0) && button1_press){
-				status = MODE3_MANYELLOW;
-				// set timer for blinking led
-				setTimer(50, 3);
-				// turn off traffic light
-				HAL_GPIO_WritePin(LED_RED_1_GPIO_Port, LED_RED_1_Pin, SET);
-				HAL_GPIO_WritePin(LED_RED_2_GPIO_Port, LED_RED_2_Pin, SET);
-				button1_press = 0;
-			}
-			break;
-		case MODE3_MANYELLOW:
-			// red led blinking 2HZ
-			if(flag[3] == 1){
-				setTimer(50, 3);
-				HAL_GPIO_TogglePin(LED_YELLOW_1_GPIO_Port, LED_YELLOW_1_Pin);
-				HAL_GPIO_TogglePin(LED_YELLOW_2_GPIO_Port, LED_YELLOW_2_Pin);
-			}
-			// 2 7SEG display value
-			Updatebuffer(yellowlight, 1);
-			// 2 7SEG display mode
-			Updatebuffer(MODE3_MANYELLOW, 2);
-			// if button2 is pressed and released after that
-			// increasing value by 1
-			if(is_button_pressed(1)){
-				button2_press = 1;
-			}
-			if(!is_button_pressed(1) && button2_press){
-				yellowlight++;
-				greenlight++;
-				button2_press = 0;
-			}
-			// if button2 is pressed long 1s
-			if(is_button_pressed_1s(1)){
-				if(button2_first_press1s){
-					setTimer(50, 4);
-					button2_first_press1s = 0;
-				}
-				if(flag[4] == 1){
-					setTimer(50, 4);
-					yellowlight++;
-					greenlight++;
-				}
-			}
-			// if button3 is pressed, turn back to mode 1 normal
-			if(is_button_pressed(2)){
-				button3_press = 1;
-			}
-			if(!is_button_pressed(2) && button3_press){
-				status = MODE1_NORMAL;
-				// set timer for traffic light
-				setTimer(100, 0);
-				setTimer(100, 1);
+// ======================= CHẾ ĐỘ TỰ ĐỘNG =======================
 
-				redlight = default_redlight;
-				yellowlight = default_yellowlight;
-				greenlight = default_greenlight;
 
-				// turn off traffic light
-				HAL_GPIO_WritePin(LED_YELLOW_1_GPIO_Port, LED_YELLOW_1_Pin, SET);
-				HAL_GPIO_WritePin(LED_YELLOW_2_GPIO_Port, LED_YELLOW_2_Pin, SET);
-				button3_press = 0;
-			}
-			// if button1 is pressed, go to next status
-			if(is_button_pressed(0)){
-				button1_press = 1;
-			}
-			if(!is_button_pressed(0) && button1_press){
-				status = MODE4_MANGREEN;
-				// set timer for blinking led
-				setTimer(50, 3);
-				// turn off traffic light
-				HAL_GPIO_WritePin(LED_YELLOW_1_GPIO_Port, LED_YELLOW_1_Pin, SET);
-				HAL_GPIO_WritePin(LED_YELLOW_2_GPIO_Port, LED_YELLOW_2_Pin, SET);
-				button1_press = 0;
-			}
-			break;
-		case MODE4_MANGREEN:
-			// red led blinking 2HZ
-			if(flag[3] == 1){
-				setTimer(50, 3);
-				HAL_GPIO_TogglePin(LED_GREEN_1_GPIO_Port, LED_GREEN_1_Pin);
-				HAL_GPIO_TogglePin(LED_GREEN_2_GPIO_Port, LED_GREEN_2_Pin);
-			}
-			// 2 7SEG display value
-			Updatebuffer(greenlight, 1);
-			// 2 7SEG display mode
-			Updatebuffer(MODE4_MANGREEN, 2);
-			// if button2 is pressed and released after that
-			// increasing value by 1
-			if(is_button_pressed(1)){
-				button2_press = 1;
-			}
-			if(!is_button_pressed(1) && button2_press){
-				greenlight++;
-				redlight++;
-				button2_press = 0;
-			}
-			// if button2 is pressed long 1s
-			if(is_button_pressed_1s(1)){
-				if(button2_first_press1s){
-					setTimer(50, 4);
-					button2_first_press1s = 0;
-				}
-				if(flag[4] == 1){
-					setTimer(50, 4);
-					greenlight++;
-					redlight++;
-				}
-			}
-			// if button3 is pressed, turn back to mode 1 normal
-			if(is_button_pressed(2)){
-				button3_press = 1;
-			}
-			if(!is_button_pressed(2) && button3_press){
-				status = MODE1_NORMAL;
-				// set timer for traffic light
-				setTimer(100, 0);
-				setTimer(100, 1);
+void switchAutoState(int newState, int mainTime, int sideTime) {
+    autoStatus = newState;
+    clock_counter_main = mainTime;
+    clock_counter_side = sideTime;
+    clearRoadLed();
+}
 
-				redlight = default_redlight;
-				yellowlight = default_yellowlight;
-				greenlight = default_greenlight;
+void fsm_traffic_auto_mode(void) {
+    switch (autoStatus) {
+        case OFF:
+            break; // Không làm gì
+        case INIT:
+            switchAutoState(RED_GREEN, timeRed, timeGreen);
+            break;
+        case RED_GREEN:
+            turnOnRed(0);
+            turnOnGreen(1);
+            if (clock_counter_side == 0)
+                switchAutoState(RED_AMBER, clock_counter_main, timeAmber);
+            break;
+        case RED_AMBER:
+            turnOnRed(0);
+            turnOnAmber(1);
+            if (clock_counter_side == 0)
+                switchAutoState(GREEN_RED, timeGreen, timeRed);
+            break;
+        case GREEN_RED:
+            turnOnGreen(0);
+            turnOnRed(1);
+            if (clock_counter_main == 0)
+                switchAutoState(AMBER_RED, timeAmber, clock_counter_side);
+            break;
+        case AMBER_RED:
+            turnOnAmber(0);
+            turnOnRed(1);
+            if (clock_counter_main == 0)
+                switchAutoState(RED_GREEN, timeRed, timeGreen);
+            break;
+        default:
+            break;
+    }
+}
 
-				// turn off traffic light
-				HAL_GPIO_WritePin(LED_GREEN_1_GPIO_Port, LED_GREEN_1_Pin, SET);
-				HAL_GPIO_WritePin(LED_GREEN_2_GPIO_Port, LED_GREEN_2_Pin, SET);
-				button3_press = 0;
-			}
-			// if button1 is pressed, go to next status
-			if(is_button_pressed(0)){
-				button1_press = 1;
-			}
-			if(!is_button_pressed(0) && button1_press){
-				status = MODE1_NORMAL;
-				// set timer for traffic light
-				setTimer(100, 0);
-				setTimer(100, 1);
-				// turn off traffic light
-				HAL_GPIO_WritePin(LED_GREEN_1_GPIO_Port, LED_GREEN_1_Pin, SET);
-				HAL_GPIO_WritePin(LED_GREEN_2_GPIO_Port, LED_GREEN_2_Pin, SET);
-				button1_press = 0;
-			}
-			break;
-		default:
-			break;
+
+// ======================= CHẾ ĐỘ TINH CHỈNH =======================
+void logNewTime(){
+	if (tuningStatus == RED_ADJ) HAL_UART_Transmit(&huart2, (void*)str, sprintf(str, "!TIMER RED :%d#\r\n",timeRed),500);
+	if (tuningStatus == AMBER_ADJ) HAL_UART_Transmit(&huart2, (void*)str, sprintf(str, "!TIMER AMBER :%d#\r\n",timeAmber),500);
+	if (tuningStatus == GREEN_ADJ) HAL_UART_Transmit(&huart2, (void*)str, sprintf(str, "!TIMER GREEN :%d#\r\n",timeGreen),500);
+}
+int initialTimeRed = 5;
+int initialTimeAmber = 2;
+int initialTimeGreen = 3;
+void fsm_traffic_tunning_mode(void){
+	switch(tuningStatus){
+	case OFF:
+		// do nothing
+	case INIT:
+		tuningStatus = RED_ADJ;
+		clearRoadLed();
+		logNewTime();
+		setTimer(timer_duration[1], 1);
+		break;
+	case RED_ADJ:
+		blinkyRed();
+		if (isButtonShortPress(2)){
+            timeRed = (timeRed + 1) % 100;
+            logNewTime();
+
+		}
+		else if (isButtonLongPress(2)){
+            timeRed = (timeRed - 1 + 100) % 100;
+            logNewTime();
+		}
+		else if (isButtonShortPress(1)){
+			tuningStatus = GREEN_ADJ;
+			clearRoadLed();
+			logNewTime();
+		}
+        else if(isButtonShortPress(0)){
+            // Đặt lại tất cả các đèn về thời gian ban đầu khi ấn nút 1
+            timeRed = initialTimeRed;
+            timeAmber = initialTimeAmber;
+            timeGreen = initialTimeGreen;
+            logNewTime();  // Gửi thông tin thời gian mới
+            tuningStatus = GREEN_ADJ;  // Giữ trạng thái GREEN_ADJ
+            clearRoadLed();  // Tắt tất cả đèn
+        }
+		break;
+	case GREEN_ADJ:
+		blinkyGreen();
+		if(isButtonShortPress(2)){
+            timeGreen = (timeGreen + 1) % 100;
+            logNewTime();;
+		}
+		else if(isButtonLongPress(2)){
+            timeGreen = (timeGreen - 1 + 100) % 100;
+            logNewTime();
+		}
+		else if(isButtonShortPress(1)){
+			tuningStatus = AMBER_ADJ;
+			clearRoadLed();
+			logNewTime();
+		}
+        else if(isButtonShortPress(0)){
+            // Đặt lại tất cả các đèn về thời gian ban đầu khi ấn nút 1
+            timeRed = initialTimeRed;
+            timeAmber = initialTimeAmber;
+            timeGreen = initialTimeGreen;
+            logNewTime();  // Gửi thông tin thời gian mới
+            tuningStatus = GREEN_ADJ;  // Giữ trạng thái GREEN_ADJ
+            clearRoadLed();  // Tắt tất cả đèn
+        }
+		break;
+	case AMBER_ADJ:
+		blinkyAmber();
+		if (isButtonShortPress(2)){
+            timeAmber = (timeAmber + 1) % 100;
+            logNewTime();
+		}
+		else if(isButtonLongPress(2)){
+            timeAmber = (timeAmber - 1 + 100) % 100;
+            logNewTime();
+		}
+		else if (isButtonShortPress(1)){
+			tuningStatus = RED_ADJ;
+			clearRoadLed();
+			logNewTime();
+		}
+        else if(isButtonShortPress(0)){
+            // Đặt lại tất cả các đèn về thời gian ban đầu khi ấn nút 1
+            timeRed = initialTimeRed;
+            timeAmber = initialTimeAmber;
+            timeGreen = initialTimeGreen;
+            logNewTime();  // Gửi thông tin thời gian mới
+            tuningStatus = GREEN_ADJ;  // Giữ trạng thái GREEN_ADJ
+            clearRoadLed();  // Tắt tất cả đèn
+        }
+		break;
+
+	default:
+		break;
+	}
+}
+// ======================= CHUYỂN ĐỔI CHẾ ĐỘ =======================
+void fsm_switch_mode(void){
+	if (isButtonLongPress(0)){
+		if (trafficMode != MANUAL_MODE) {
+			trafficMode = MANUAL_MODE;
+			HAL_UART_Transmit(&huart2, (void*)str, sprintf(str, "!SWITCH TO MANUAL MODE#\r\n"),500);
+			// TODO: prepare for manual mode
+			manualStatus = INIT;
+			autoStatus= OFF;
+			tuningStatus = OFF;
+		}
+		else {
+			trafficMode = INIT;
+			HAL_UART_Transmit(&huart2, (void*)str, sprintf(str, "!SWITCH TO AUTO MODE#\r\n"),500);
+
+		}
+	}
+	else if (isButtonLongPress(1)){
+		if (trafficMode != TUNING_MODE) {
+			trafficMode = TUNING_MODE;
+			HAL_UART_Transmit(&huart2, (void*)str, sprintf(str, "!SWITCH TO TUNING MODE#\r\n"),500);
+			// TODO: prepare for next mode
+			tuningStatus = INIT;
+			autoStatus = OFF;
+			manualStatus = OFF;
+		}
+		else {
+			trafficMode = INIT;
+			HAL_UART_Transmit(&huart2, (void*)str, sprintf(str, "!SWITCH TO AUTO MODE#\r\n"),500);
+		}
+	}
+}
+// ======================= VÒNG LẶP CHÍNH =======================
+void fsm_traffic(void){
+	switch(trafficMode){
+	case INIT:
+		if (timeRed != (timeAmber + timeGreen)){
+			trafficMode = ERROR_MODE;
+			HAL_UART_Transmit(&huart2, (void*)str, sprintf(str, "!TIMER ERROR#\r\n"),500);
+			autoStatus = OFF;
+			manualStatus = OFF;
+			tuningStatus = OFF;
+		}
+		else {
+			trafficMode = AUTO_MODE;
+			autoStatus = INIT;
+			manualStatus = OFF;
+			tuningStatus = OFF;
+			setTimer(timer_duration[0], 0);
+		}
+		turnOffAllLED();
+		break;
+	case AUTO_MODE:
+
+		fsm_traffic_auto_mode();
+		break;
+	case TUNING_MODE:
+		fsm_traffic_tunning_mode();
+		break;
+	default:
+		break;
+	}
+}
+
+void clock_counter_traffic_update(void){
+	if((timer_flag[0] == 1) && (trafficMode == AUTO_MODE)){
+		clock_counter_main--;
+		clock_counter_side--;
+		HAL_UART_Transmit(&huart2, (void*)str, sprintf(str, "\n!7SEG WAY1:%d#\r\n",clock_counter_main),500);
+		HAL_UART_Transmit(&huart2, (void*)str, sprintf(str, "!7SEG WAY2:%d#\r\n",clock_counter_side),500);
+
+		setTimer(timer_duration[0], 0);
 	}
 }

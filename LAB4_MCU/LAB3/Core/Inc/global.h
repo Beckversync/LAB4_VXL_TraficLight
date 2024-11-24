@@ -8,39 +8,52 @@
 #ifndef INC_GLOBAL_H_
 #define INC_GLOBAL_H_
 
-#define Internalclock 8000000
-#define Onesecond 1000
+#include "main.h"
+#include "input_reading.h"
+#include "Traffic_Light_FSM.h"
+#include "System_FSM.h"
+#include "scheduler.h"
+#include "software_timer.h"
+#include <stdio.h>
 
-extern int prescaler;
-extern int period;
-extern int time_cycle;
-extern int id;
-extern int button1_press;
-extern int button2_press;
-extern int button3_press;
-extern int button2_first_press1s;
+#define TIME_CYCLE	10
+#define NUM_TIMER	4
 
-enum State { INIT, MODE1_NORMAL, MODE2_MANRED, MODE3_MANYELLOW,
-	MODE4_MANGREEN
-};
+//global init and off status
+#define	INIT		10
+#define OFF			0
 
-enum TrafficLight { GREEN, YELLOW, RED };
+//MODE OF SYSTEM
+#define AUTO_MODE 	1
+#define MANUAL_MODE 2
+#define TUNING_MODE 3
+#define ERROR_MODE	4
+//STATE for AUTO / MANUAL SETTING
+#define	RED_GREEN	1
+#define	RED_AMBER	2
+#define	GREEN_RED	3
+#define	AMBER_RED	4
 
-extern int status;
+//STATE for TUNING SETTING
+#define	RED_ADJ		1
+#define AMBER_ADJ	2
+#define GREEN_ADJ	3
 
-extern int TL1;
-extern int TL2;
+extern int timeRed;
+extern int timeAmber;
+extern int timeGreen;
 
-extern int redlight;
-extern int yellowlight;
-extern int greenlight;
 
-extern int Red1;
-extern int Green1;
-extern int Yellow1;
+//String use for UART
+extern char str[];
 
-extern int Red2;
-extern int Green2;
-extern int Yellow2;
+extern UART_HandleTypeDef huart2;
+
+
+//Variable use for FSM
+extern int autoStatus;
+extern int manualStatus;
+extern int tuningStatus;
+
 
 #endif /* INC_GLOBAL_H_ */

@@ -5,13 +5,18 @@
  *      Author: Dell
  */
 
-#ifndef INC_INPUT_READING_H_
-#define INC_INPUT_READING_H_
+#ifndef INC_BUTTON_H_
+#define INC_BUTTON_H_
 
-#include "main.h"
+#include "global.h"
+#define NUM_BUTTON	3
 
-void button_reading(unsigned char index);
-unsigned char is_button_pressed(uint8_t index);
-unsigned char is_button_pressed_1s(unsigned char index);
+#define PRESSED 0
+#define RELEASE 1
+#define KEY_PRESS_TIME 1000
 
-#endif /* INC_INPUT_READING_H_ */
+
+void getButtonValue(void);
+int isButtonShortPress(int index);
+int isButtonLongPress(int index);
+#endif /* INC_BUTTON_H_ */

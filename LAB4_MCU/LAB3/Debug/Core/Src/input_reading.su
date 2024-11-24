@@ -1,4 +1,3 @@
-input_reading.c:27:6:InitButton	16	static
-input_reading.c:34:6:button_reading	24	static
-input_reading.c:63:15:is_button_pressed	16	static
-input_reading.c:68:15:is_button_pressed_1s	16	static
+input_reading.c:23:6:getButtonValue	16	static
+input_reading.c:53:5:isButtonShortPress	16	static
+input_reading.c:61:5:isButtonLongPress	16	static

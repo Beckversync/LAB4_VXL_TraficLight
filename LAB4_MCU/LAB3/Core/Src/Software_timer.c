@@ -8,19 +8,24 @@
 
 #include "software_timer.h"
 
-int count[100];
-int flag[100];
+
+
+int timer_counter[NUM_TIMER] = {0};
+int timer_flag[NUM_TIMER] = {0};
+int timer_duration[NUM_TIMER] = {1000, 250, 0, 0};
 
 void setTimer(int duration, int index){
-	flag[index] = 0;
-	count[index] = duration;
+	timer_counter[index] = duration / TIME_CYCLE;
+	timer_flag[index] = 0;
 }
 
-void timer_run(int index){
-	if(count[index] > 0){
-		count[index]--;
-		if(count[index] <= 0){
-			flag[index] = 1;
+void timerRun(){
+	for (int i = 0; i < NUM_TIMER; i++){
+		if (timer_counter[i] > 0){
+			timer_counter[i]--;
+			if (timer_counter[i] <= 0){
+				timer_flag[i] = 1;
+			}
 		}
 	}
 }

@@ -7,106 +7,71 @@
 
 #include "Traffic_Light_FSM.h"
 
-void TrafficLightFSM1(){
-	switch(TL1){
-		case RED:
-			HAL_GPIO_WritePin(LED_RED_1_GPIO_Port, LED_RED_1_Pin, RESET);
-			HAL_GPIO_WritePin(LED_YELLOW_1_GPIO_Port, LED_YELLOW_1_Pin, SET);
-			HAL_GPIO_WritePin(LED_GREEN_1_GPIO_Port, LED_GREEN_1_Pin, SET);
-			Updatebuffer(Red1, 1);
-
-			if(flag[0] == 1){
-				setTimer(100, 0);
-				Red1--;
-				if(Red1 < 0){
-					TL1 = GREEN;
-					Green1 = greenlight;
-				}
-			}
-			break;
-		case GREEN:
-			HAL_GPIO_WritePin(LED_RED_1_GPIO_Port, LED_RED_1_Pin, SET);
-			HAL_GPIO_WritePin(LED_YELLOW_1_GPIO_Port, LED_YELLOW_1_Pin, SET);
-			HAL_GPIO_WritePin(LED_GREEN_1_GPIO_Port, LED_GREEN_1_Pin, RESET);
-			Updatebuffer(Green1, 1);
-
-			if(flag[0] == 1){
-				setTimer(100, 0);
-				Green1--;
-				if(Green1 < 0){
-					TL1 = YELLOW;
-					Yellow1 = yellowlight;
-				}
-			}
-			break;
-		case YELLOW:
-			HAL_GPIO_WritePin(LED_RED_1_GPIO_Port, LED_RED_1_Pin, SET);
-			HAL_GPIO_WritePin(LED_YELLOW_1_GPIO_Port, LED_YELLOW_1_Pin, RESET);
-			HAL_GPIO_WritePin(LED_GREEN_1_GPIO_Port, LED_GREEN_1_Pin, SET);
-			Updatebuffer(Yellow1, 1);
-
-			if(flag[0] == 1){
-				setTimer(100, 0);
-				Yellow1--;
-				if(Yellow1 < 0){
-					TL1 = RED;
-					Red1 = redlight;
-				}
-			}
-			break;
-		default:
-			break;
-	}
+// Common function to control LED states
+void setLEDState(GPIO_PinState red, GPIO_PinState amber, GPIO_PinState green, int index) {
+    if (index == 0) { // Way 1
+        HAL_GPIO_WritePin(GPIOA, RED_LED1_Pin, red);
+        HAL_GPIO_WritePin(GPIOA, AMBER_LED1_Pin, amber);
+        HAL_GPIO_WritePin(GPIOA, GREEN_LED1_Pin, green);
+    } else if (index == 1) { // Way 2
+        HAL_GPIO_WritePin(GPIOA, RED_LED2_Pin, red);
+        HAL_GPIO_WritePin(GPIOA, AMBER_LED2_Pin, amber);
+        HAL_GPIO_WritePin(GPIOA, GREEN_LED2_Pin, green);
+    }
 }
 
-void TrafficLightFSM2(){
-	switch(TL2){
-		case RED:
-			HAL_GPIO_WritePin(LED_RED_2_GPIO_Port, LED_RED_2_Pin, RESET);
-			HAL_GPIO_WritePin(LED_YELLOW_2_GPIO_Port, LED_YELLOW_2_Pin, SET);
-			HAL_GPIO_WritePin(LED_GREEN_2_GPIO_Port, LED_GREEN_2_Pin, SET);
-			Updatebuffer(Red2, 2);
+// Turn off all LEDs
+void turnOffAllLED(void) {
+    HAL_GPIO_WritePin(GPIOA, RED_LED1_Pin | RED_LED2_Pin | AMBER_LED1_Pin |
+                      AMBER_LED2_Pin | GREEN_LED1_Pin | GREEN_LED2_Pin, GPIO_PIN_SET);
+}
 
-			if(flag[1] == 1){
-				setTimer(100, 1);
-				Red2--;
-				if(Red2 < 0){
-					TL2 = GREEN;
-					Green2 = greenlight;
-				}
-			}
-			break;
-		case GREEN:
-			HAL_GPIO_WritePin(LED_RED_2_GPIO_Port, LED_RED_2_Pin, SET);
-			HAL_GPIO_WritePin(LED_YELLOW_2_GPIO_Port, LED_YELLOW_2_Pin, SET);
-			HAL_GPIO_WritePin(LED_GREEN_2_GPIO_Port, LED_GREEN_2_Pin, RESET);
-			Updatebuffer(Green2, 2);
+// Turn on all LEDs
+void turnOnAllLED(void) {
+    HAL_GPIO_WritePin(GPIOA, RED_LED1_Pin | RED_LED2_Pin | AMBER_LED1_Pin |
+                      AMBER_LED2_Pin | GREEN_LED1_Pin | GREEN_LED2_Pin, GPIO_PIN_RESET);
+}
 
-			if(flag[1] == 1){
-				setTimer(100, 1);
-				Green2--;
-				if(Green2 < 0){
-					TL2 = YELLOW;
-					Yellow2 = yellowlight;
-				}
-			}
-			break;
-		case YELLOW:
-			HAL_GPIO_WritePin(LED_RED_2_GPIO_Port, LED_RED_2_Pin, SET);
-			HAL_GPIO_WritePin(LED_YELLOW_2_GPIO_Port, LED_YELLOW_2_Pin, RESET);
-			HAL_GPIO_WritePin(LED_GREEN_2_GPIO_Port, LED_GREEN_2_Pin, SET);
-			Updatebuffer(Yellow2, 2);
+// Turn on RED LED for specified way
+void turnOnRed(int index) {
+    setLEDState(GPIO_PIN_RESET, GPIO_PIN_SET, GPIO_PIN_SET, index);
+}
 
-			if(flag[1] == 1){
-				setTimer(100, 1);
-				Yellow2--;
-				if(Yellow2 < 0){
-					TL2 = RED;
-					Red2 = redlight;
-				}
-			}
-			break;
-		default:
-			break;
-	}
+// Turn on AMBER LED for specified way
+void turnOnAmber(int index) {
+    setLEDState(GPIO_PIN_SET, GPIO_PIN_RESET, GPIO_PIN_SET, index);
+}
+
+// Turn on GREEN LED for specified way
+void turnOnGreen(int index) {
+    setLEDState(GPIO_PIN_SET, GPIO_PIN_SET, GPIO_PIN_RESET, index);
+}
+
+// Blink RED LEDs
+void blinkyRed(void) {
+    if (timer_flag[1] == 1) {
+        HAL_GPIO_TogglePin(GPIOA, RED_LED1_Pin | RED_LED2_Pin);
+        setTimer(timer_duration[1], 1);
+    }
+}
+
+// Blink AMBER LEDs
+void blinkyAmber(void) {
+    if (timer_flag[1] == 1) {
+        HAL_GPIO_TogglePin(GPIOA, AMBER_LED1_Pin | AMBER_LED2_Pin);
+        setTimer(timer_duration[1], 1);
+    }
+}
+
+// Blink GREEN LEDs
+void blinkyGreen(void) {
+    if (timer_flag[1] == 1) {
+        HAL_GPIO_TogglePin(GPIOA, GREEN_LED1_Pin | GREEN_LED2_Pin);
+        setTimer(timer_duration[1], 1);
+    }
+}
+
+// Clear all road LEDs
+void clearRoadLed(void) {
+    turnOffAllLED();
 }

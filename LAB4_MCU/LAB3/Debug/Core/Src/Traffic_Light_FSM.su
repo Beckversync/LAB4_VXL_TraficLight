@@ -1,2 +1,10 @@
-Traffic_Light_FSM.c:10:6:TrafficLightFSM1	8	static
-Traffic_Light_FSM.c:62:6:TrafficLightFSM2	8	static
+Traffic_Light_FSM.c:11:6:setLEDState	16	static
+Traffic_Light_FSM.c:24:6:turnOffAllLED	8	static
+Traffic_Light_FSM.c:30:6:turnOnAllLED	8	static
+Traffic_Light_FSM.c:36:6:turnOnRed	16	static
+Traffic_Light_FSM.c:41:6:turnOnAmber	16	static
+Traffic_Light_FSM.c:46:6:turnOnGreen	16	static
+Traffic_Light_FSM.c:51:6:blinkyRed	8	static
+Traffic_Light_FSM.c:59:6:blinkyAmber	8	static
+Traffic_Light_FSM.c:67:6:blinkyGreen	8	static
+Traffic_Light_FSM.c:75:6:clearRoadLed	8	static

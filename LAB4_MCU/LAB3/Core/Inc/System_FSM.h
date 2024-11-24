@@ -9,10 +9,10 @@
 #define INC_SYSTEM_FSM_H_
 
 #include "global.h"
-#include "Traffic_Light_FSM.h"
-#include "input_reading.h"
-#include "software_timer.h"
+#include <stdio.h>
 
-void SystemFSM();
+void fsm_switch_mode(void);
+void fsm_traffic(void);
+void clock_counter_traffic_update(void);
 
 #endif /* INC_SYSTEM_FSM_H_ */

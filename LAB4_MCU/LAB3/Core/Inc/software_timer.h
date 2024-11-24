@@ -8,10 +8,12 @@
 #ifndef INC_SOFTWARE_TIMER_H_
 #define INC_SOFTWARE_TIMER_H_
 
-extern int count[100];
-extern int flag[100];
+#include "global.h"
 
-void setTimer(int, int);
-void timer_run(int);
+//Variables use for timer
+extern int timer_flag[];
+extern int timer_duration[];
+void setTimer(int duration, int index);
+void timerRun();
 
 #endif /* INC_SOFTWARE_TIMER_H_ */

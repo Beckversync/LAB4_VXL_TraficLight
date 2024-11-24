@@ -26,15 +26,7 @@
 #include "System_FSM.h"
 #include "input_reading.h"
 #include "scheduler.h"
-void get_key(void) {
-    for (uint8_t i = 0; i < 3; i++) {
-        button_reading(i);
-    }
-}
 
-void manager_state(void) {
-    SystemFSM();
-}
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -107,27 +99,24 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);
 
-  InitButton();
-  setTimer(25, 2);
+  setTimer(timer_duration[0], 0);
+  SCH_Init();
+  SCH_Add_Task(fsm_traffic, 0, 1);
+  SCH_Add_Task(clock_counter_traffic_update, 0, 1);
+  SCH_Add_Task(fsm_switch_mode, 0, 1);
+  SCH_Add_Task(timerRun, 0, 1);
+  SCH_Add_Task(getButtonValue, 0, 1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  SCH_Add_Task(get_key, 10, 10);
-  SCH_Add_Task(manager_state, 10, 100);
   while (1)
   {
-
+	  SCH_Dispatch_Tasks();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  SystemFSM();
-	  if(flag[2] == 1){
-		  setTimer(25, 2);
-		  Update7SEG(id++);
-		  if(id >= 4) id = 0;
-	  }
-  }
+}
   /* USER CODE END 3 */
 }
 
@@ -206,10 +195,7 @@ static void MX_TIM2_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN TIM2_Init 2 */
-  prescaler = htim2.Init.Prescaler;
-  period = htim2.Init.Period;
-  int frequency = Internalclock / ((1+prescaler)*(1+period));
-  time_cycle = Onesecond / frequency;
+
   /* USER CODE END TIM2_Init 2 */
 
 }
@@ -261,19 +247,19 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, LED_RED_1_Pin|LED_YELLOW_1_Pin|LED_GREEN_1_Pin|LED_RED_2_Pin
-                          |LED_YELLOW_2_Pin|LED_GREEN_2_Pin|EN0_Pin|EN1_Pin
+  HAL_GPIO_WritePin(GPIOA, RED_LED1_Pin|AMBER_LED1_Pin|GREEN_LED1_Pin|RED_LED2_Pin
+                          |AMBER_LED2_Pin|GREEN_LED2_Pin|EN0_Pin|EN1_Pin
                           |EN2_Pin|EN3_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, a_Pin|b_Pin|c_Pin|d_Pin
                           |e_Pin|f_Pin|g_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : LED_RED_1_Pin LED_YELLOW_1_Pin LED_GREEN_1_Pin LED_RED_2_Pin
-                           LED_YELLOW_2_Pin LED_GREEN_2_Pin EN0_Pin EN1_Pin
+  /*Configure GPIO pins : RED_LED1_Pin AMBER_LED1_Pin GREEN_LED1_Pin RED_LED2_Pin
+                           AMBER_LED2_Pin GREEN_LED2_Pin EN0_Pin EN1_Pin
                            EN2_Pin EN3_Pin */
-  GPIO_InitStruct.Pin = LED_RED_1_Pin|LED_YELLOW_1_Pin|LED_GREEN_1_Pin|LED_RED_2_Pin
-                          |LED_YELLOW_2_Pin|LED_GREEN_2_Pin|EN0_Pin|EN1_Pin
+  GPIO_InitStruct.Pin = RED_LED1_Pin|AMBER_LED1_Pin|GREEN_LED1_Pin|RED_LED2_Pin
+                          |AMBER_LED2_Pin|GREEN_LED2_Pin|EN0_Pin|EN1_Pin
                           |EN2_Pin|EN3_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
@@ -289,8 +275,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : BUTTON_3_Pin BUTTON_1_Pin BUTTON_2_Pin */
-  GPIO_InitStruct.Pin = BUTTON_3_Pin|BUTTON_1_Pin|BUTTON_2_Pin;
+  /*Configure GPIO pins : BUTTON3_Pin BUTTON1_Pin BUTTON2_Pin */
+  GPIO_InitStruct.Pin = BUTTON3_Pin|BUTTON1_Pin|BUTTON2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
@@ -299,23 +285,7 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef * htim){
-	// timer run for traffic light 1
-	timer_run(0);
-	// timer run for traffic light 2
-	timer_run(1);
-	// timer run for quet led
-	timer_run(2);
-	// timer for blinking led 2HZ
-	timer_run(3);
-	// timer for long press 1s button2
-	timer_run(4);
-	// read button 1
-	button_reading(0);
-	// read button 2
-	button_reading(1);
-	// read button 3
-	button_reading(2);
-	// quet led
+	SCH_Update();
 }
 /* USER CODE END 4 */
 
