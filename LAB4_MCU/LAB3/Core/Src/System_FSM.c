@@ -173,25 +173,11 @@ void fsm_traffic_tunning_mode(void){
 }
 // ======================= CHUYỂN ĐỔI CHẾ ĐỘ =======================
 void fsm_switch_mode(void){
-	if (isButtonLongPress(0)){
-		if (trafficMode != MANUAL_MODE) {
-			trafficMode = MANUAL_MODE;
-			HAL_UART_Transmit(&huart2, (void*)str, sprintf(str, "!SWITCH TO MANUAL MODE#\r\n"),500);
-			// TODO: prepare for manual mode
-			manualStatus = INIT;
-			autoStatus= OFF;
-			tuningStatus = OFF;
-		}
-		else {
-			trafficMode = INIT;
-			HAL_UART_Transmit(&huart2, (void*)str, sprintf(str, "!SWITCH TO AUTO MODE#\r\n"),500);
 
-		}
-	}
-	else if (isButtonLongPress(1)){
+	 if (isButtonLongPress(1)){
 		if (trafficMode != TUNING_MODE) {
 			trafficMode = TUNING_MODE;
-			HAL_UART_Transmit(&huart2, (void*)str, sprintf(str, "!SWITCH TO TUNING MODE#\r\n"),500);
+			HAL_UART_Transmit(&huart2, (void*)str, sprintf(str, "!SWITCH TO HANDLE MODE#\r\n"),500);
 			// TODO: prepare for next mode
 			tuningStatus = INIT;
 			autoStatus = OFF;

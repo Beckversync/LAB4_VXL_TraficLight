@@ -72,6 +72,11 @@ void HAL_MspInit(void)
 
   /* System interrupt init*/
 
+  /* Peripheral interrupt init */
+  /* RCC_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(RCC_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(RCC_IRQn);
+
   /** DISABLE: JTAG-DP Disabled and SW-DP Disabled
   */
   __HAL_AFIO_REMAP_SWJ_DISABLE();

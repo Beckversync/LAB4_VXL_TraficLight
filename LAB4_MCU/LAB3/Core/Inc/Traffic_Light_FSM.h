@@ -29,13 +29,7 @@ void blinkyRed(void);
 void blinkyAmber(void);
 void blinkyGreen(void);
 
-/*
- * @brief: set the pedestrian led
- *
- * @param:	0	-	RED
- * 			1	-	GREEN
- * @retval: None
- */
+
 void setPedestrianLed(int index);
 void unsetPedestrianLed(int index);
 
