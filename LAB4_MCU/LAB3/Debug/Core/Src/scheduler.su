@@ -1,7 +1,7 @@
-scheduler.c:185:6:SCH_Init	16	static
-scheduler.c:197:6:heapifyUp	24	static
-scheduler.c:212:6:heapifyDown	32	static
-scheduler.c:236:6:SCH_Add_Task	32	static
-scheduler.c:262:6:SCH_Update	16	static
-scheduler.c:274:6:SCH_Delete_Task	24	static
-scheduler.c:289:6:SCH_Dispatch_Tasks	16	static
+scheduler.c:29:6:SCH_Init	16	static
+scheduler.c:41:6:heapifyUp	24	static
+scheduler.c:56:6:heapifyDown	32	static
+scheduler.c:80:6:SCH_Add_Task	32	static
+scheduler.c:106:6:SCH_Update	16	static
+scheduler.c:118:6:SCH_Delete_Task	24	static
+scheduler.c:133:6:SCH_Dispatch_Tasks	16	static

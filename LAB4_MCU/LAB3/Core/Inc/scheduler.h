@@ -10,7 +10,6 @@
 
 #include "global.h"
 struct heap;  // Forward declaration
-void heap_add_task(struct heap* h, void (*pFunction)(), uint32_t delay, uint32_t period);
 void SCH_Init(void);
 void SCH_Add_Task(void(*pFunction)(), uint32_t DELAY, uint32_t PERIOD);
 void SCH_Update(void);

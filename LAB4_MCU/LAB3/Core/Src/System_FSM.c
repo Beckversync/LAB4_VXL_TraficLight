@@ -19,9 +19,9 @@ int clock_counter_main = 0;
 int clock_counter_side = 0;
 
 // Thời gian mỗi đèn trong chế độ tự động
-int timeRed = 5;
+int timeRed = 6;
 int timeAmber = 2;
-int timeGreen = 3;
+int timeGreen = 4;
 
 
 // ======================= CHẾ ĐỘ TỰ ĐỘNG =======================
@@ -44,8 +44,8 @@ void fsm_traffic_auto_mode(void) {
         case RED_GREEN:
             turnOnRed(0);
             turnOnGreen(1);
-            if (clock_counter_side == 0)
-                switchAutoState(RED_AMBER, clock_counter_main, timeAmber);
+            if (clock_counter_side == 0){
+                switchAutoState(RED_AMBER, clock_counter_main, timeAmber);}
             break;
         case RED_AMBER:
             turnOnRed(0);
@@ -223,10 +223,10 @@ void fsm_traffic(void){
 
 void clock_counter_traffic_update(void){
 	if((timer_flag[0] == 1) && (trafficMode == AUTO_MODE)){
-		clock_counter_main--;
-		clock_counter_side--;
-		HAL_UART_Transmit(&huart2, (void*)str, sprintf(str, "\n!7SEG WAY1:%d#\r\n",clock_counter_main),500);
-		HAL_UART_Transmit(&huart2, (void*)str, sprintf(str, "!7SEG WAY2:%d#\r\n",clock_counter_side),500);
+        if (clock_counter_main > 0) clock_counter_main--;
+        if (clock_counter_side > 0) clock_counter_side--;
+		HAL_UART_Transmit(&huart2, (void*)str, sprintf(str, "\n! WAY1:%d#\r\n",clock_counter_main),500);
+		HAL_UART_Transmit(&huart2, (void*)str, sprintf(str, "! WAY2:%d#\r\n",clock_counter_side),500);
 
 		setTimer(timer_duration[0], 0);
 	}

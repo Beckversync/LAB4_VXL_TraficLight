@@ -20,34 +20,36 @@ void setLEDState(GPIO_PinState red, GPIO_PinState amber, GPIO_PinState green, in
     }
 }
 
-// Turn off all LEDs
+// Tắt toàn bộ LED
 void turnOffAllLED(void) {
-    HAL_GPIO_WritePin(GPIOA, RED_LED1_Pin | RED_LED2_Pin | AMBER_LED1_Pin |
-                      AMBER_LED2_Pin | GREEN_LED1_Pin | GREEN_LED2_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOA, RED_LED1_Pin | RED_LED2_Pin |
+                             AMBER_LED1_Pin | AMBER_LED2_Pin |
+                             GREEN_LED1_Pin | GREEN_LED2_Pin, GPIO_PIN_SET);
 }
 
-// Turn on all LEDs
+// Bật toàn bộ LED
 void turnOnAllLED(void) {
-    HAL_GPIO_WritePin(GPIOA, RED_LED1_Pin | RED_LED2_Pin | AMBER_LED1_Pin |
-                      AMBER_LED2_Pin | GREEN_LED1_Pin | GREEN_LED2_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOA, RED_LED1_Pin | RED_LED2_Pin |
+                             AMBER_LED1_Pin | AMBER_LED2_Pin |
+                             GREEN_LED1_Pin | GREEN_LED2_Pin, GPIO_PIN_RESET);
 }
 
-// Turn on RED LED for specified way
+// Bật đèn RED LED for specified way
 void turnOnRed(int index) {
     setLEDState(GPIO_PIN_RESET, GPIO_PIN_SET, GPIO_PIN_SET, index);
 }
 
-// Turn on AMBER LED for specified way
+// Bật đèn AMBER LED for specified way
 void turnOnAmber(int index) {
     setLEDState(GPIO_PIN_SET, GPIO_PIN_RESET, GPIO_PIN_SET, index);
 }
 
-// Turn on GREEN LED for specified way
+// Bật đènGREEN LED for specified way
 void turnOnGreen(int index) {
     setLEDState(GPIO_PIN_SET, GPIO_PIN_SET, GPIO_PIN_RESET, index);
 }
 
-// Blink RED LEDs
+// Nhấp nháy LED RED LEDs
 void blinkyRed(void) {
     if (timer_flag[1] == 1) {
         HAL_GPIO_TogglePin(GPIOA, RED_LED1_Pin | RED_LED2_Pin);
@@ -55,7 +57,7 @@ void blinkyRed(void) {
     }
 }
 
-// Blink AMBER LEDs
+// Nhấp nháy LED AMBER LEDs
 void blinkyAmber(void) {
     if (timer_flag[1] == 1) {
         HAL_GPIO_TogglePin(GPIOA, AMBER_LED1_Pin | AMBER_LED2_Pin);
@@ -63,7 +65,7 @@ void blinkyAmber(void) {
     }
 }
 
-// Blink GREEN LEDs
+// Nhấp nháy LED GREEN LEDs
 void blinkyGreen(void) {
     if (timer_flag[1] == 1) {
         HAL_GPIO_TogglePin(GPIOA, GREEN_LED1_Pin | GREEN_LED2_Pin);
@@ -71,7 +73,7 @@ void blinkyGreen(void) {
     }
 }
 
-// Clear all road LEDs
+// Tắt đèn giao thông của tất cả các hướng
 void clearRoadLed(void) {
     turnOffAllLED();
 }

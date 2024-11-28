@@ -30,7 +30,4 @@ void blinkyAmber(void);
 void blinkyGreen(void);
 
 
-void setPedestrianLed(int index);
-void unsetPedestrianLed(int index);
-
 #endif /* INC_TRAFFIC_LIGHT_FSM_H_ */
