@@ -55,5 +55,10 @@ extern int autoStatus;
 extern int manualStatus;
 extern int tuningStatus;
 
+// Variable use UART
+extern uint8_t index_buffer;
+#define MAX_BUFFER_SIZE 30
+extern uint8_t buffer[MAX_BUFFER_SIZE];
+
 
 #endif /* INC_GLOBAL_H_ */

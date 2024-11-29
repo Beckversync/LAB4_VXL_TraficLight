@@ -5,6 +5,7 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../Core/Src/Commang_parser.c \
 ../Core/Src/Output.c \
 ../Core/Src/Software_timer.c \
 ../Core/Src/System_FSM.c \
@@ -20,6 +21,7 @@ C_SRCS += \
 ../Core/Src/system_stm32f1xx.c 
 
 OBJS += \
+./Core/Src/Commang_parser.o \
 ./Core/Src/Output.o \
 ./Core/Src/Software_timer.o \
 ./Core/Src/System_FSM.o \
@@ -35,6 +37,7 @@ OBJS += \
 ./Core/Src/system_stm32f1xx.o 
 
 C_DEPS += \
+./Core/Src/Commang_parser.d \
 ./Core/Src/Output.d \
 ./Core/Src/Software_timer.d \
 ./Core/Src/System_FSM.d \

@@ -1,0 +1,2 @@
+Commang_parser.c:17:9:check_command	24	static
+Commang_parser.c:31:6:command_parser_fsm	8	static

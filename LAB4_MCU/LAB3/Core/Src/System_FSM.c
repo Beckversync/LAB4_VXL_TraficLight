@@ -195,7 +195,7 @@ void fsm_traffic(void){
 	case INIT:
 		if (timeRed != (timeAmber + timeGreen)){
 			trafficMode = ERROR_MODE;
-			HAL_UART_Transmit(&huart2, (void*)str, sprintf(str, "!TIMER ERROR#\r\n"),500);
+			HAL_UART_Transmit(&huart2, (void*)str, sprintf(str, "!Syntax Error#\r\n"),500);
 			autoStatus = OFF;
 			manualStatus = OFF;
 			tuningStatus = OFF;

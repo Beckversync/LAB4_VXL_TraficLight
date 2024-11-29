@@ -63,7 +63,13 @@ static void MX_USART2_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+	uint8_t temp = 0;
+	void HAL_UART_RxCpltCallback ( UART_HandleTypeDef * huart ) {
+		if( huart -> Instance == USART2 ) {
+			HAL_UART_Transmit (& huart2 , & temp , 1 , 50) ;
+			HAL_UART_Receive_IT (& huart2 , & temp , 1) ;
+		}
+	}
 /* USER CODE END 0 */
 
 /**
@@ -106,6 +112,8 @@ int main(void)
   SCH_Add_Task(fsm_switch_mode, 0, 1);
   SCH_Add_Task(timerRun, 0, 1);
   SCH_Add_Task(getButtonValue, 0, 1);
+
+  HAL_UART_Receive_IT(&huart2, &temp, 1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -113,6 +121,10 @@ int main(void)
   while (1)
   {
 	  SCH_Dispatch_Tasks();
+//	  if( buffer_flag == 1) {
+//	   command_parser_fsm () ;
+//	   buffer_flag = 0;
+//	   }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
