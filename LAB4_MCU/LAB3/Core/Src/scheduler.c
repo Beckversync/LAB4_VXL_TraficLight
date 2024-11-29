@@ -10,7 +10,7 @@
 #include <stdint.h>
 
 struct sTask {
-    void (*pTask)(void);    // Con trỏ hàm để thực thi task
+     void (*pTask)(void);    // Con trỏ hàm để thực thi task
     uint32_t Delay;         // Thời gian trễ
     uint32_t Period;        // Chu kỳ lặp lại
 };

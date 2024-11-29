@@ -13,13 +13,15 @@
 
 #include<Command_parser.h>
 #include <stdint.h>
+
+
 uint8_t state_command_parser_fsm = INIT_STATE;
 uint8_t check_command(const char* cmd, uint8_t len) {
     uint8_t index_buffer_tem = (index_buffer == 0) ? MAX_BUFFER_SIZE - 1 : index_buffer - 1;
 
     for (uint8_t i = len - 1; ; i--) {
         if (buffer[index_buffer_tem] != cmd[i]) {
-            return 0; // Nếu không khớp, trả về 0
+            return 0;
         }
         index_buffer_tem = (index_buffer_tem == 0) ? MAX_BUFFER_SIZE - 1 : index_buffer_tem - 1;
         if (i == 0) break;

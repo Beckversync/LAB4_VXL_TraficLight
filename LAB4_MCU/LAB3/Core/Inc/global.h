@@ -61,4 +61,10 @@ extern uint8_t index_buffer;
 extern uint8_t buffer[MAX_BUFFER_SIZE];
 
 
+#define INIT        0
+#define READ_traffictimer    1
+#define SHOW_traffidctimer    2
+
+
+
 #endif /* INC_GLOBAL_H_ */
