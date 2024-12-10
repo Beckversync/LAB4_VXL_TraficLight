@@ -20,6 +20,7 @@ struct container {
     int numSlot;            // Số lượng task hiện tại trong heap
     int emptySlot;          // Số lượng slot còn trống trong heap
 };
+int num=0;            // Số lượng task hiện tại trong heap
 
 struct container* container;
 
@@ -35,6 +36,7 @@ void SCH_Init(void) {
     container->heap = (struct sTask**)malloc(sizeof(struct sTask*) * MAX_TASKS); // Cấp phát mảng heap
     container->numSlot = 0;
     container->emptySlot = MAX_TASKS;
+    num=1;
 }
 
 // Hàm giúp duy trì tính chất heap sau khi thêm phần tử mới
@@ -76,13 +78,19 @@ void heapifyDown(struct container* cont, int index) {
     }
 }
 
+
+
+int getcontainer(){
+	return container->numSlot;
+}
 // Thêm task vào heap
 void SCH_Add_Task(void(*pFunction)(), uint32_t DELAY, uint32_t PERIOD) {
     if (container->emptySlot <= 0) {
+
         // Không còn chỗ trống trong heap
         return;
     }
-
+	//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9,SET);
     // Cấp phát bộ nhớ cho task mới
     struct sTask* newTask = (struct sTask*)malloc(sizeof(struct sTask));
     if (newTask == NULL) {
@@ -104,19 +112,20 @@ void SCH_Add_Task(void(*pFunction)(), uint32_t DELAY, uint32_t PERIOD) {
 
 // Cập nhật độ trễ của task trong heap
 void SCH_Update(void) {
-    if (container->numSlot > 0) {
-        for (int i = 0; i < container->numSlot; i++) {
+   if ((container->numSlot > 0)  && num==1) {
+	   for (int i = 0; i < container->numSlot; i++) {
             if (container->heap[i]->Delay > 0) {
                 container->heap[i]->Delay--;
                 heapifyDown(container, i);
             }
-        }
+    }
     }
 }
 
 // Xóa task khỏi heap
 void SCH_Delete_Task(int index) {
     if (index >= 0 && index < container->numSlot) {
+
         struct sTask* taskToDelete = container->heap[index];
 
         // Di chuyển phần tử cuối cùng lên đầu để giữ lại tính chất heap
@@ -131,7 +140,8 @@ void SCH_Delete_Task(int index) {
 
 // Hàm dùng để xử lý task
 void SCH_Dispatch_Tasks(void) {
-    while (container->numSlot > 0 && container->heap[0]->Delay == 0) {
+    while (container->numSlot > 0 && container->heap[0]->Delay == 0 && num==1) {
+
         // Khi delay về 0 -> task được thực thi ( như biến cờ )
         (*(container->heap[0]->pTask))(); // Thực thi hàm của task
 

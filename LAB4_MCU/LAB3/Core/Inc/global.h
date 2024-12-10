@@ -16,6 +16,7 @@
 #include "software_timer.h"
 #include <stdio.h>
 
+
 #define TIME_CYCLE	10
 #define NUM_TIMER	4
 
@@ -61,10 +62,13 @@ extern uint8_t index_buffer;
 extern uint8_t buffer[MAX_BUFFER_SIZE];
 
 
-#define INIT        0
+//#define INIT        0
 #define READ_traffictimer    1
 #define SHOW_traffidctimer    2
 
+extern uint8_t buffer_flag; // Khai báo extern
 
+
+extern void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart); // Khai báo extern
 
 #endif /* INC_GLOBAL_H_ */

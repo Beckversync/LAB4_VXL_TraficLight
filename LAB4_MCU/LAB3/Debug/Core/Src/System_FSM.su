@@ -1,0 +1,7 @@
+System_FSM.c:32:6:switchAutoState	24	static
+System_FSM.c:39:6:fsm_traffic_auto_mode	8	static
+System_FSM.c:77:6:logNewTime	8	static
+System_FSM.c:85:6:fsm_traffic_tunning_mode	8	static
+System_FSM.c:177:6:fsm_switch_mode	8	static
+System_FSM.c:195:6:fsm_traffic	8	static
+System_FSM.c:226:6:clock_counter_traffic_update	8	static
